@@ -40,7 +40,7 @@ struct SerialDechunk;
 struct SerialDechunk {
 	uint8_t *b; // buffer
 	uint16_t chunksize;
-	uint16_t ctr;
+	uint16_t _ctr;
 	void (*add)(struct SerialDechunk *sp, uint8_t c);
 	void (*cb)(struct SerialDechunk *sp);
 	void (*reset_state)(struct SerialDechunk *sp);

@@ -1,4 +1,6 @@
-# MagicSerialDechunk - Receive magic-sequence-wrapped data (ex. from serial comm)
+# MagicSerialDechunk
+
+Receive magic-sequence-wrapped data (ex. from serial comm)
 
 Tiny low-overhead library, coupled with MagicSerialChunk, for inter-device
 communications.  The initial version uses magic sequences before and after

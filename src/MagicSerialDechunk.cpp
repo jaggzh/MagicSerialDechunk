@@ -15,10 +15,10 @@ void serial_dechunk_init(struct SerialDechunk *sp,
 	sp->add = _serial_dechunk_add;
 	sp->reset_state = _serial_dechunk_reset;
 	sp->cb = cb;
-	sp->ctr = 0;
+	sp->_ctr = 0;
 }
 void _serial_dechunk_reset(struct SerialDechunk *sp) {
-	sp->ctr = 0;
+	sp->_ctr = 0;
 	sp->_state = CHUNKSTATE_EMPTY;
 }
 void _serial_dechunk_add(struct SerialDechunk *sp, uint8_t c) {
@@ -34,11 +34,11 @@ void _serial_dechunk_add(struct SerialDechunk *sp, uint8_t c) {
 			DSPL("Missing 2nd byte of start sequence");
 		}
 	} else if (sp->_state == CHUNKSTATE_GATHER) {
-		if (sp->ctr < sp->chunksize) {
-			sp->b[sp->ctr] = c;
-			sp->ctr++;
+		if (sp->_ctr < sp->chunksize) {
+			sp->b[sp->_ctr] = c;
+			sp->_ctr++;
 		}
-		if (sp->ctr == sp->chunksize) sp->_state = CHUNKSTATE_END1;
+		if (sp->_ctr == sp->chunksize) sp->_state = CHUNKSTATE_END1;
 	} else if (sp->_state == CHUNKSTATE_END1) {
 		if (c == SER_ENSEQ1) sp->_state = CHUNKSTATE_END2;
 		else { /* Failed to find magic (chunk overflowed)

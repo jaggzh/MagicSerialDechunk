@@ -2,20 +2,22 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
-#define MAGICCHUNK_DEBUG
+/* #define MAGICCHUNK_DEBUG */
 #include "MagicSerialDechunk.h"
 
 void serial_dechunk_init(struct SerialDechunk *sp,
 	                     uint16_t chunksize,
-	                     void (*cb)(struct SerialDechunk *sp)) {
+	                     void (*cb)(struct SerialDechunk *sp, void *userdata),
+	                     void *userdata) {
 	memset(sp, 0, sizeof *sp);
 	sp->chunksize = chunksize;
 	sp->b = (uint8_t *)calloc(chunksize, 1);
 	sp->_state = CHUNKSTATE_EMPTY;
 	sp->add = _serial_dechunk_add;
 	sp->reset_state = _serial_dechunk_reset;
-	sp->cb = cb;
 	sp->_ctr = 0;
+	sp->cb = cb;
+	sp->userdata = userdata;
 }
 void _serial_dechunk_reset(struct SerialDechunk *sp) {
 	sp->_ctr = 0;
@@ -52,7 +54,7 @@ void _serial_dechunk_add(struct SerialDechunk *sp, uint8_t c) {
 			DSPL("Missing 2nd byte of end sequence");
 			sp->reset_state(sp);
 		} else {                          // SUCCESS!!
-			if (sp->cb) (*sp->cb)(sp);
+			if (sp->cb) (*sp->cb)(sp, sp->userdata);
 			sp->reset_state(sp);
 		}
 	}

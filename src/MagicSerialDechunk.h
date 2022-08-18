@@ -42,15 +42,17 @@ struct SerialDechunk {
 	uint16_t chunksize;
 	uint16_t _ctr;
 	void (*add)(struct SerialDechunk *sp, uint8_t c);
-	void (*cb)(struct SerialDechunk *sp);
+	void (*cb)(struct SerialDechunk *sp, void *userdata);
 	void (*reset_state)(struct SerialDechunk *sp);
 	int _state;
+	void *userdata;
 };
 
 /* Call to initialize existing struct */
 void serial_dechunk_init(struct SerialDechunk *sp,
 	                     uint16_t chunksize,
-	                     void (*cb)(struct SerialDechunk *sp));
+	                     void (*cb)(struct SerialDechunk *sp, void *userdata),
+	                     void *userdata);
 
 void _serial_dechunk_reset(struct SerialDechunk *sp);
 void _serial_dechunk_add(struct SerialDechunk *sp, uint8_t c);
